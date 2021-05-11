@@ -3,16 +3,17 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 const log = require("../../util/log");
 
-// const endpoint = "http://missmixalot.local/scratch-extension-api";
-const endpoint = "http://localhost:80/scratch-extension-api";
+const endpoint = "http://missmixalot.local/scratch-extension-api";
+// const endpoint = "http://localhost:80/scratch-extension-api";
 const cupMaxVolume = 20;
 
 const drinkIngredients = {
     a: "Fanta",
     b: "Cola",
     c: "Sprite",
-    d: "Danskvand",
-    e: "Cola Zero",
+    d: "Cola Zero",
+    e: "Vand",
+    f: "Danskvand",
 };
 
 class Scratch3MissMixALot {
@@ -33,7 +34,7 @@ class Scratch3MissMixALot {
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 2,
+                            defaultValue: 20,
                         },
                     },
                 },
@@ -44,7 +45,7 @@ class Scratch3MissMixALot {
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 2,
+                            defaultValue: 20,
                         },
                     },
                 },
@@ -55,7 +56,7 @@ class Scratch3MissMixALot {
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 2,
+                            defaultValue: 20,
                         },
                     },
                 },
@@ -66,7 +67,7 @@ class Scratch3MissMixALot {
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 2,
+                            defaultValue: 20,
                         },
                     },
                 },
@@ -77,7 +78,18 @@ class Scratch3MissMixALot {
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 2,
+                            defaultValue: 20,
+                        },
+                    },
+                },
+                {
+                    opcode: "addDrinkIngredient_f",
+                    blockType: BlockType.COMMAND,
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.f} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 20,
                         },
                     },
                 },
@@ -156,6 +168,10 @@ class Scratch3MissMixALot {
 
     addDrinkIngredient_e(args) {
         this.addDrinkIngredient("e", args.VOLUME);
+    }
+
+    addDrinkIngredient_f(args) {
+        this.addDrinkIngredient("f", args.VOLUME);
     }
 
     getCupMaxVolume() {
