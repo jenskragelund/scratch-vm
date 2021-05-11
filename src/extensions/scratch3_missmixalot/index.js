@@ -3,6 +3,8 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 const log = require("../../util/log");
 
+const cupMaxVolume = 20;
+
 const drinkIngredients = {
     a: "Fanta",
     b: "Cola",
@@ -25,14 +27,67 @@ class Scratch3MissMixALot {
                 {
                     opcode: "addDrinkIngredient_a",
                     blockType: BlockType.COMMAND,
-                    text: `Tilføj ${drinkIngredients.a} til din drink`,
-                    arguments: {},
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.a} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2,
+                        },
+                    },
                 },
                 {
                     opcode: "addDrinkIngredient_b",
                     blockType: BlockType.COMMAND,
-                    text: `Tilføj ${drinkIngredients.b} til din drink`,
-                    arguments: {},
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.b} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2,
+                        },
+                    },
+                },
+                {
+                    opcode: "addDrinkIngredient_c",
+                    blockType: BlockType.COMMAND,
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.c} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2,
+                        },
+                    },
+                },
+                {
+                    opcode: "addDrinkIngredient_d",
+                    blockType: BlockType.COMMAND,
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.d} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2,
+                        },
+                    },
+                },
+                {
+                    opcode: "addDrinkIngredient_e",
+                    blockType: BlockType.COMMAND,
+                    text: `Tilføj [VOLUME]ml ${drinkIngredients.e} til din drink`,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2,
+                        },
+                    },
+                },
+                {
+                    opcode: "getDrinkVolume",
+                    blockType: BlockType.REPORTER,
+                    text: "drink størrelse (ml)",
+                },
+                {
+                    opcode: "getCupMaxVolume",
+                    blockType: BlockType.REPORTER,
+                    text: "krus størrelse (ml)",
                 },
             ],
             menus: {},
@@ -49,33 +104,59 @@ class Scratch3MissMixALot {
         }
     }
 
-    addDrinkIngredient(key) {
+    addDrinkIngredient(key, addedVolume) {
         if (this.drinkIngredientTargets === null) {
             this._loadDrinkIngredientTargets();
         }
         const variable = Object.values(
             this.drinkIngredientTargets[key].variables
         ).find((v) => v.name === "ml");
-        this.drinkIngredientTargets[key].variables[variable.id].value = variable.value + 1;
+
+        this.drinkIngredientTargets[key].variables[variable.id].value =
+            parseInt(variable.value) + parseInt(addedVolume);
     }
 
-    addDrinkIngredient_a() {
-        this.addDrinkIngredient("a");
+    addDrinkIngredient_a(args) {
+        console.log(args);
+        this.addDrinkIngredient("a", args.VOLUME);
     }
 
-    addDrinkIngredient_b() {
-        this.addDrinkIngredient("b");
+    addDrinkIngredient_b(args) {
+        this.addDrinkIngredient("b", args.VOLUME);
     }
 
-    addDrinkIngredient_c() {
-        this.addDrinkIngredient("c");
+    addDrinkIngredient_c(args) {
+        this.addDrinkIngredient("c", args.VOLUME);
     }
 
-    addDrinkIngredient_d() {
-        this.addDrinkIngredient("d");
+    addDrinkIngredient_d(args) {
+        this.addDrinkIngredient("d", args.VOLUME);
     }
-    addDrinkIngredient_e() {
-        this.addDrinkIngredient("e");
+
+    addDrinkIngredient_e(args) {
+        this.addDrinkIngredient("e", args.VOLUME);
+    }
+
+    getCupMaxVolume() {
+        return cupMaxVolume;
+    }
+
+    getDrinkVolume(args) {
+        if (this.drinkIngredientTargets === null) {
+            this._loadDrinkIngredientTargets();
+        }
+
+        let volume = 0;
+        for (const [key, value] of Object.entries(drinkIngredients)) {
+            const variable = Object.values(
+                this.drinkIngredientTargets[key].variables
+            ).find((v) => v.name === "ml");
+
+            if (variable) {
+                volume += variable.value;
+            }
+        }
+        return volume;
     }
 }
 
