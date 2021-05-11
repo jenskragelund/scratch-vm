@@ -124,6 +124,9 @@ class Scratch3MissMixALot {
     }
 
     _getVolumes() {
+        if (this.drinkIngredientTargets === null) {
+            this._loadDrinkIngredientTargets();
+        }
         const volumes = {};
         for (const [key, value] of Object.entries(drinkIngredients)) {
             const variable = Object.values(
