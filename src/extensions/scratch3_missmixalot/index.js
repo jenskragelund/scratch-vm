@@ -3,8 +3,8 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 const log = require("../../util/log");
 
+const endpoint = "http://missmixalot.local/scratch-extension-api/";
 const cupMaxVolume = 20;
-
 const drinkIngredients = {
     a: "Fanta",
     b: "Cola",
@@ -89,6 +89,11 @@ class Scratch3MissMixALot {
                     blockType: BlockType.REPORTER,
                     text: "krus størrelse (ml)",
                 },
+                {
+                    opcode: "postRecipe",
+                    blockType: BlockType.COMMAND,
+                    text: `Mix drink`,
+                },
             ],
             menus: {},
         };
@@ -102,6 +107,20 @@ class Scratch3MissMixALot {
                 (t) => t.sprite.name === value
             );
         }
+    }
+
+    _getVolumes() {
+        const volumes = {};
+        for (const [key, value] of Object.entries(drinkIngredients)) {
+            const variable = Object.values(
+                this.drinkIngredientTargets[key].variables
+            ).find((v) => v.name === "ml");
+
+            if (variable) {
+                volumes[key] = parseInt(variable.value);
+            }
+        }
+        return volumes;
     }
 
     addDrinkIngredient(key, addedVolume) {
@@ -146,17 +165,29 @@ class Scratch3MissMixALot {
             this._loadDrinkIngredientTargets();
         }
 
-        let volume = 0;
-        for (const [key, value] of Object.entries(drinkIngredients)) {
-            const variable = Object.values(
-                this.drinkIngredientTargets[key].variables
-            ).find((v) => v.name === "ml");
+        return Object.values(this._getVolumes).reduce(
+            (acc, cur) => acc + cur,
+            0
+        );
+    }
 
-            if (variable) {
-                volume += variable.value;
-            }
-        }
-        return volume;
+    async postRecipe() {
+        const volumes = this._getVolumes();
+
+        const response = await fetch(endpoint, {
+            method: "POST",
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache",
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(this._getVolumes()), // body data type must match "Content-Type" header
+        });
+
+        console.log(response.json());
     }
 }
 
