@@ -3,8 +3,10 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 const log = require("../../util/log");
 
-const endpoint = "http://missmixalot.local/scratch-extension-api/";
+// const endpoint = "http://missmixalot.local/scratch-extension-api";
+const endpoint = "http://localhost:80/scratch-extension-api";
 const cupMaxVolume = 20;
+
 const drinkIngredients = {
     a: "Fanta",
     b: "Cola",
@@ -90,7 +92,7 @@ class Scratch3MissMixALot {
                     text: "krus størrelse (ml)",
                 },
                 {
-                    opcode: "postRecipe",
+                    opcode: "postVolumes",
                     blockType: BlockType.COMMAND,
                     text: `Mix drink`,
                 },
@@ -171,23 +173,12 @@ class Scratch3MissMixALot {
         );
     }
 
-    async postRecipe() {
+    postVolumes() {
         const volumes = this._getVolumes();
 
-        const response = await fetch(endpoint, {
-            method: "POST",
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache",
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-            body: JSON.stringify(this._getVolumes()), // body data type must match "Content-Type" header
-        });
-
-        console.log(response.json());
+        fetch(`${endpoint}?volumes=${JSON.stringify(volumes)}`)
+            .then((response) => response.json())
+            .then((data) => console.log(data));
     }
 }
 
