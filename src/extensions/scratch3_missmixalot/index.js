@@ -3,7 +3,9 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 const log = require("../../util/log");
 
-const endpoint = "http://missmixalot.local/scratch-extension-api";
+const missMixALotIP = "192.168.1.102";
+const endpoint = `http://${missMixALotIP}/scratch-extension-api`;
+// const endpoint = "http://missmixalot.local/scratch-extension-api";
 // const endpoint = "http://localhost:80/scratch-extension-api";
 const cupMaxVolume = 20;
 
