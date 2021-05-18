@@ -186,7 +186,7 @@ class Scratch3MissMixALot {
             this._loadDrinkIngredientTargets();
         }
 
-        return Object.values(this._getVolumes).reduce(
+        return Object.values(this._getVolumes()).reduce(
             (acc, cur) => acc + cur,
             0
         );
